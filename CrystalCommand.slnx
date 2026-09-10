@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CrystalCommand.Core.Tests/CrystalCommand.Core.Tests.csproj" />
+  <Project Path="CrystalCommand.Core/CrystalCommand.Core.csproj" />
+</Solution>
