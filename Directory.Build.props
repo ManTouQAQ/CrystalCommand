@@ -1,0 +1,7 @@
+﻿<Project>
+    <PropertyGroup>
+        <Version>0.1.0</Version>
+        <Authors>ManTou</Authors>
+        <RepositoryUrl>https://github.com/ManTouQAQ/CrystalCommand</RepositoryUrl>
+    </PropertyGroup>
+</Project>

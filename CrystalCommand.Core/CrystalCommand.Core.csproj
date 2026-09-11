@@ -4,6 +4,10 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <PackageId>CrystalCommand.Core</PackageId>
+        <Description>Command framework for .NET</Description>
+        <PackageTags>command;parser;framework</PackageTags>
     </PropertyGroup>
 
 </Project>
