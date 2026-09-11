@@ -14,7 +14,7 @@ public class CommandNodeTest
     {
         var checkPermission = (ParseContext<TestSender> c) =>
             c.CommandSender.HasPermissions ? RequirementCheckResult.Pass() : RequirementCheckResult.Failure();
-        
+
         _root = CommandBuilder.Command<TestSender>("foo",
             _ =>
             {
@@ -34,10 +34,7 @@ public class CommandNodeTest
                     null,
                     n =>
                     {
-                        n.Literal(
-                            "admin",
-                            requirement: checkPermission
-                        );
+                        n.Literal("admin", requirement: checkPermission);
                     }
                 );
 
@@ -47,7 +44,11 @@ public class CommandNodeTest
                     return true;
                 });
 
-                n.Literal("admin", requirement: checkPermission);
+                n.Literal("admin", requirement: checkPermission, configure: n =>
+                {
+                    n.Literal("baz");
+                    n.Argument("method", new StringArgumentParser<TestSender>(), optional: true);
+                });
 
                 n.Argument(
                     "method",
@@ -68,6 +69,25 @@ public class CommandNodeTest
                         });
                     }
                 );
+
+                n.Literal(
+                    "test-optional",
+                    async c =>
+                    {
+                        _result =
+                            $"v1={await c.GetArgumentAsync<int>("v1")}, v2={await c.GetArgumentAsync<string>("v2") ?? "null"}";
+                        return true;
+                    },
+                    null,
+                    n =>
+                    {
+                        n.Argument("v1", new IntArgumentParser<TestSender>(), optional: true,
+                            configure: n =>
+                            {
+                                n.Argument("v2", new StringArgumentParser<TestSender>(), optional: true);
+                            });
+                    }
+                );
             });
     }
 
@@ -77,6 +97,9 @@ public class CommandNodeTest
     [InlineData("foo bar2", "bar2", 2)]
     [InlineData("foo hello", "method-hello")]
     [InlineData("foo hello 123", "method=hello, number=123")]
+    [InlineData("foo test-optional", "v1=0, v2=null", 2)]
+    [InlineData("foo test-optional 233", "v1=233, v2=null", 2)]
+    [InlineData("foo test-optional 233 qwe", "v1=233, v2=qwe")]
     public async Task CommandExecutionTest(string command, string expected, int expectedNode = 1)
     {
         _result = null;
@@ -106,10 +129,12 @@ public class CommandNodeTest
     }
 
     [Theory]
-    [InlineData("foo bar1 admin", true, 1)]
-    [InlineData("foo bar1 admin", false, 0)]
     [InlineData("foo admin", true, 2)]
     [InlineData("foo admin", false, 1)]
+    [InlineData("foo admin baz", true, 2)]
+    [InlineData("foo admin baz", false, 0)]
+    [InlineData("foo admin qwe", true, 1)]
+    [InlineData("foo admin qwe", false, 0)]
     public void CommandRequirementTest(string command, bool hasPermissions, int expectedNode)
     {
         var context = new ParseContext<TestSender>(new TestSender(hasPermissions), command);

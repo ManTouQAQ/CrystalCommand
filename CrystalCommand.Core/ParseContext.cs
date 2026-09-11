@@ -15,7 +15,7 @@ public class ParseContext<TCommandSender>(
     public Dictionary<CommandNode<TCommandSender>, Exception> ParseFailureResults { get; } = new();
 
     private readonly Dictionary<string, ArgumentParseResult> _currentParsedArguments = [];
-
+    
     public void CommitResult(CommandNode<TCommandSender> node)
     { 
         var result = new ParsedResult(node, new Dictionary<string, ArgumentParseResult>(_currentParsedArguments));

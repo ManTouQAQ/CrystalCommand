@@ -81,11 +81,12 @@ public class NodeBuilder<TCommandSender>(
         IArgumentParser<TCommandSender> parser,
         Func<CommandContext<TCommandSender>, Task<bool>>? handler = null,
         Func<ParseContext<TCommandSender>, RequirementCheckResult>? requirement = null,
-        Action<NodeBuilder<TCommandSender>>? configure = null
+        Action<NodeBuilder<TCommandSender>>? configure = null,
+        bool optional = false
     )
     {
         var child = node.AddChild(
-            new ArgumentCommandNode<TCommandSender>(key, parser)
+            new ArgumentCommandNode<TCommandSender>(key, parser, optional)
             {
                 Handler = handler,
                 Requirement = requirement

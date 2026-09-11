@@ -11,7 +11,8 @@ public class CommandContext<TCommandSender>(
 
     public async Task<T?> GetArgumentAsync<T>(string key)
     {
-        var result = await arguments[key].GetResultAsync();
+        if (!arguments.TryGetValue(key, out var argument)) return default;
+        var result = await argument.GetResultAsync();
         return (T?)result;
     }
 }

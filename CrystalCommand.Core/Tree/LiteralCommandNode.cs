@@ -6,7 +6,7 @@ public class LiteralCommandNode<TCommandSender>(
 {
     public override string Key { get; } = key;
 
-    public override void ParseNode(ParseContext<TCommandSender> context)
+    protected override void ParseNode0(ParseContext<TCommandSender> context, CommandNode<TCommandSender> upstreamNode)
     {
         var reader = context.LineReader;
         var pointerSnapshot = reader.Pointer;
@@ -17,8 +17,7 @@ public class LiteralCommandNode<TCommandSender>(
             context.LineReader.Pointer = pointerSnapshot;
             return;
         }
-        
-        base.ParseNode(context);
+        base.ParseNode0(context, this);
         context.LineReader.Pointer = pointerSnapshot;
     }
 }
